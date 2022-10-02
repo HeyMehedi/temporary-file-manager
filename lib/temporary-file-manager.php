@@ -22,6 +22,8 @@ class Temporary_File_Manager {
 	public $max;
 	public $dir_name;
 
+	public $rand;
+
 	public function __construct( $args = array() ) {
 		$this->prepare_property( $args );
 		add_action( 'init', array( $this, 'init_uploads' ) );
@@ -81,13 +83,12 @@ class Temporary_File_Manager {
 	 * Uploaded files and moves them to the temporary directory.
 	 *
 	 * @param should be $_FILES, Default param `$_FILES`.
-	 * @return string|WP_Error file path, or WP_Error if validation fails.
+	 * @return array|WP_Error file path or file urls, or WP_Error if validation fails.
 	 */
-	public function upload_files( $files = array() ) {
+	public function upload_files( $return_url = false ) {
 		$this->uploaded_files = array();
-		$files                = ! empty( $files ) ? $files : $_POST;
-		foreach ( $files as $key => $file ) {
-			$file_path = $this->upload_single_file( $file );
+		foreach ( $_FILES as $key => $file ) {
+			$file_path = $this->upload_single_file( $file, $return_url );
 			if ( $file_path ) {
 				$this->uploaded_files[] = $file_path;
 			}
@@ -100,14 +101,13 @@ class Temporary_File_Manager {
 	 * Validates uploaded file and move to the temporary directory.
 	 *
 	 * @param array $file an item of `$_FILES`.
-	 * @return string|WP_Error file path, or WP_Error if validation fails.
+	 * @return string|WP_Error file path | file url, or WP_Error if validation fails.
 	 */
-	public function upload_single_file( $file ) {
+	public function upload_single_file( $file, $return_url = false ) {
 
 		// Move uploaded file to tmp dir
-		$dir         = $this->get_upload_dir();
-		$uploads_dir = $this->maybe_add_random_dir( $dir );
-
+		$dir      = $this->get_upload_dir();
+		$rand_dir = $this->maybe_add_random_dir( $dir );
 		$tmp_name = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
 		$filename = isset( $file['name'] ) ? $file['name'] : '';
 
@@ -117,11 +117,16 @@ class Temporary_File_Manager {
 
 		$filename = $this->canonicalize( $filename, array( 'strto' => 'as-is' ) );
 		$filename = $this->anti_script_file_name( $filename );
-		$new_file = path_join( $uploads_dir, $filename );
+		$new_file = path_join( $rand_dir, $filename );
 
 		if ( move_uploaded_file( $tmp_name, $new_file ) ) {
 			// Make sure the uploaded file is only readable for the owner process
 			chmod( $new_file, 0400 );
+
+			$url = "{$this->get_upload_url()}" . DIRECTORY_SEPARATOR . "{$this->rand}" . DIRECTORY_SEPARATOR . "{$filename}";
+			if ( $return_url ) {
+				return $url;
+			}
 
 			return $new_file;
 		}
@@ -161,9 +166,9 @@ class Temporary_File_Manager {
 	 */
 	public function maybe_add_random_dir( $dir ) {
 		do {
-			$rand_max = mt_getrandmax();
-			$rand     = zeroise( mt_rand( 0, $rand_max ), strlen( $rand_max ) );
-			$dir_new  = path_join( $dir, $rand );
+			$rand_max   = mt_getrandmax();
+			$this->rand = zeroise( mt_rand( 0, $rand_max ), strlen( $rand_max ) );
+			$dir_new    = path_join( $dir, $this->rand );
 		} while ( file_exists( $dir_new ) );
 
 		if ( wp_mkdir_p( $dir_new ) ) {
@@ -290,6 +295,18 @@ class Temporary_File_Manager {
 		wp_mkdir_p( $dir );
 
 		return $dir;
+	}
+
+	/**
+	 * Returns the directory url for uploaded files.
+	 *
+	 * @return string Directory path.
+	 */
+	public function get_upload_url() {
+		$url = path_join( $this->upload_dir( 'url' ), $this->dir_name );
+		wp_mkdir_p( $url );
+
+		return $url;
 	}
 
 	/**
