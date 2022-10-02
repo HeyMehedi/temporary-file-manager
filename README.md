@@ -1,1 +1,1 @@
-# Temporary-File-Manager
+# Temporary-File-Manager for WP
