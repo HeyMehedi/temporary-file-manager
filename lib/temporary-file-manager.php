@@ -48,7 +48,7 @@ class Temporary_File_Manager {
 			'max_items_remove_when_func_call' => 100,
 		);
 
-		$args = wp_parse_args( $this->args, $this->default );
+		$args = wp_parse_args( $args, $this->default );
 		$args = apply_filters( "{$project_name}_args", $args );
 
 		$this->allowed_extensions = $args['allowed_extensions'];
@@ -108,8 +108,8 @@ class Temporary_File_Manager {
 		$dir         = $this->get_upload_dir();
 		$uploads_dir = $this->maybe_add_random_dir( $dir );
 
-		$tmp_name = $file['tmp_name'];
-		$filename = $file['name'];
+		$tmp_name = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
+		$filename = isset( $file['name'] ) ? $file['name'] : '';
 
 		if ( empty( $tmp_name ) or ! is_uploaded_file( $tmp_name ) ) {
 			return;
