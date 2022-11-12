@@ -82,7 +82,7 @@ class Temporary_File_Manager {
 	/**
 	 * Uploaded files and moves them to the temporary directory.
 	 *
-	 * @param should be $_FILES, Default param `$_FILES`.
+	 * @param bool $return_url, Default param false
 	 * @return array|WP_Error file path or file urls, or WP_Error if validation fails.
 	 */
 	public function upload_files( $return_url = false ) {
