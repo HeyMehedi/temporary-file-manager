@@ -42,3 +42,9 @@ $returned_file_url = $temp_file_manager->upload_files( true );
 */
 $returned_file_dir = $temp_file_manager->upload_files( false );
 ```
+
+
+## Use cases
+* Store submission data as temporary files and send emails. After completing the job clean up the files.
+* Save Submitted files to Temporary for a while. 
+* and more...
