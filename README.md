@@ -1,7 +1,7 @@
 
 # Temporary File Manager for WP
 
-A brief description of what this project does and who it's for
+Uploaded files and moves them to the temporary directory.
 
 
 
