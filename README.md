@@ -1,6 +1,21 @@
 
 # Temporary File Manager for WP
 
+**What motivates me to create?**
+
+While working on a plugin I ran into some problems, that is to email the post-submission data and its files as attachments, but the email was not being sent directly from PHP's $_FILES.
+
+In order to send emails I need to put the files in the store first and then these files can be sent as email attachments. also, files should be cleaned automatically when stored.
+
+When I couldn't find this solution. @obiPlabon gave me the idea that you can see their code by doing the same on "contact form 7". 
+
+After seeing the file storage system and code of "contact form 7", I made this class myself and this repo for everyone's convenience.
+
+
+
+
+**What you will get by using this?**
+
 Upload and move files to the temporary directory, and clean up files and directories according to your schedule after finishing the job.
 
 
