@@ -1,8 +1,7 @@
 
 # Temporary File Manager for WP
 
-Uploaded files and moves them to the temporary directory.
-
+Upload and move them to the temporary directory, and clean up files and directories according to your schedule after finishing the job.
 
 
 
