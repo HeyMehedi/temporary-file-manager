@@ -68,11 +68,11 @@ class Temporary_File_Manager {
 	public function init_uploads() {
 		$dir = $this->get_upload_dir();
 
-		if ( is_dir( $dir ) and is_writable( $dir ) ) {
+		if ( is_dir( $dir ) && is_writable( $dir ) ) {
 			$htaccess_file = path_join( $dir, '.htaccess' );
 
 			if ( ! file_exists( $htaccess_file )
-				and $handle = @fopen( $htaccess_file, 'w' ) ) {
+				&& $handle = @fopen( $htaccess_file, 'w' ) ) {
 				fwrite( $handle, "Deny from all\n" );
 				fclose( $handle );
 			}
@@ -111,7 +111,7 @@ class Temporary_File_Manager {
 		$tmp_name = isset( $file['tmp_name'] ) ? $file['tmp_name'] : '';
 		$filename = isset( $file['name'] ) ? $file['name'] : '';
 
-		if ( empty( $tmp_name ) or ! is_uploaded_file( $tmp_name ) ) {
+		if ( empty( $tmp_name ) || ! is_uploaded_file( $tmp_name ) ) {
 			return;
 		}
 
@@ -188,18 +188,18 @@ class Temporary_File_Manager {
 	public function cleanup_upload_files() {
 
 		if ( is_admin()
-			or 'GET' != $_SERVER['REQUEST_METHOD']
-			or is_robots()
-			or is_feed()
-			or is_trackback() ) {
+			|| 'GET' != $_SERVER['REQUEST_METHOD']
+			|| is_robots()
+			|| is_feed()
+			|| is_trackback() ) {
 			return;
 		}
 
 		$dir = trailingslashit( $this->get_upload_dir() );
 
 		if ( ! is_dir( $dir )
-			or ! is_readable( $dir )
-			or ! wp_is_writable( $dir ) ) {
+			|| ! is_readable( $dir )
+			|| ! wp_is_writable( $dir ) ) {
 			return;
 		}
 
@@ -210,14 +210,14 @@ class Temporary_File_Manager {
 		if ( $handle = opendir( $dir ) ) {
 			while ( false !== ( $file = readdir( $handle ) ) ) {
 				if ( '.' == $file
-					or '..' == $file
-					or '.htaccess' == $file ) {
+					|| '..' == $file
+					|| '.htaccess' == $file ) {
 					continue;
 				}
 
 				$mtime = @filemtime( path_join( $dir, $file ) );
 
-				if ( $mtime and time() < $mtime + $seconds ) { // less than $seconds old
+				if ( $mtime && time() < $mtime + $seconds ) { // less than $seconds old
 					continue;
 				}
 
@@ -267,7 +267,7 @@ class Temporary_File_Manager {
 		if ( $handle = opendir( $dir ) ) {
 			while ( false !== ( $file = readdir( $handle ) ) ) {
 				if ( $file == "."
-					or $file == ".." ) {
+					|| $file == ".." ) {
 					continue;
 				}
 
@@ -278,7 +278,7 @@ class Temporary_File_Manager {
 		}
 
 		if ( false !== ( $files = scandir( $dir ) )
-			and ! array_diff( $files, array( '.', '..' ) ) ) {
+			&& ! array_diff( $files, array( '.', '..' ) ) ) {
 			return rmdir( $dir );
 		}
 
@@ -318,8 +318,8 @@ class Temporary_File_Manager {
 	 */
 	public function canonicalize( $text, $args = '' ) {
 		// for back-compat
-		if ( is_string( $args ) and '' !== $args
-			and false === strpos( $args, '=' ) ) {
+		if ( is_string( $args ) && '' !== $args
+			&& false === strpos( $args, '=' ) ) {
 			$args = array(
 				'strto' => $args,
 			);
