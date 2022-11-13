@@ -58,7 +58,7 @@ $returned_file_url = $temp_file_manager->upload_files( true );
 
 ```php
 /**
-* Return Files Dirs
+* Return File Dirs
 */
 $returned_file_dir = $temp_file_manager->upload_files( false );
 ```
